@@ -131,3 +131,33 @@ def shift_share(df: pd.DataFrame, early: tuple[int, int], late: tuple[int, int],
                       # which avoids reporting a large residual that is hard to interpret
                       "within_sym": (within + interaction / 2) / total,
                       "between_sym": (between + interaction / 2) / total})
+
+
+def panel_trend(values: pd.Series, per: float = 10.0, log: bool = False) -> pd.Series:
+    """Within-unit time trend from a two-way panel, with unit fixed effects.
+
+    ``values`` must carry a (unit, year) MultiIndex -- e.g. the output of
+    :func:`summer_share` on a (ParkName, Year) matrix. Unit fixed effects absorb
+    every time-invariant difference between parks (size, climate, road access),
+    so the year coefficient is identified purely from *within-park* change over
+    time. Standard errors are clustered by unit, since a park's residuals are
+    correlated across adjacent years.
+
+    This is a stronger test than :func:`shift_share`: the decomposition asks how
+    much of the aggregate move is within-park, while this asks whether the
+    average park moves at all once composition is differenced out.
+    """
+    s = values.dropna()
+    units = s.index.get_level_values(0).to_numpy()
+    years = s.index.get_level_values(-1).to_numpy(dtype=float)
+    y = np.log(s.to_numpy(dtype=float)) if log else s.to_numpy(dtype=float)
+
+    dummies = pd.get_dummies(pd.Series(units), drop_first=True).astype(float).to_numpy()
+    X = sm.add_constant(np.column_stack([years, dummies]))
+    model = sm.OLS(y, X).fit(cov_type="cluster", cov_kwds={"groups": pd.factorize(units)[0]})
+
+    b, (lo, hi) = model.params[1] * per, model.conf_int()[1] * per
+    if log:
+        b, lo, hi = [(np.exp(v) - 1) * 100 for v in (b, lo, hi)]
+    return pd.Series({"slope": b, "ci_low": lo, "ci_high": hi, "p_value": model.pvalues[1],
+                      "n_obs": float(model.nobs), "n_units": float(len(np.unique(units)))})
