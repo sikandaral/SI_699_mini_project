@@ -126,4 +126,8 @@ def shift_share(df: pd.DataFrame, early: tuple[int, int], late: tuple[int, int],
     interaction = ((wb - wa) * (rb - ra)).sum()
     return pd.Series({"rate_early": (wa * ra).sum(), "rate_late": (wb * rb).sum(), "total_change": total,
                       "within_share": within / total, "between_share": between / total,
-                      "interaction_share": interaction / total})
+                      "interaction_share": interaction / total,
+                      # symmetric (average-weight) split: the interaction term is divided evenly,
+                      # which avoids reporting a large residual that is hard to interpret
+                      "within_sym": (within + interaction / 2) / total,
+                      "between_sym": (between + interaction / 2) / total})
