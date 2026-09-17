@@ -161,3 +161,48 @@ def panel_trend(values: pd.Series, per: float = 10.0, log: bool = False) -> pd.S
         b, lo, hi = [(np.exp(v) - 1) * 100 for v in (b, lo, hi)]
     return pd.Series({"slope": b, "ci_low": lo, "ci_high": hi, "p_value": model.pvalues[1],
                       "n_obs": float(model.nobs), "n_units": float(len(np.unique(units)))})
+
+
+# --- Seasonality index ---------------------------------------------------------
+
+DAYS_IN_MONTH = np.array([31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
+
+
+def seasonality_indices(matrix: pd.DataFrame) -> pd.DataFrame:
+    """Measure how concentrated a visit calendar is, and when it peaks.
+
+    ``matrix`` is a (group x Month) table of visit counts, e.g. from
+    :func:`monthly_matrix`. Counts are first converted to visits per day so that
+    February is not scored as quiet simply for being short.
+
+    Two questions get two separate numbers, because they are different things:
+
+    - *How* seasonal: ``concentration`` is the resultant length of the monthly
+      shares placed on a circle, running 0 (visits spread evenly over the year)
+      to 1 (every visit in a single month). ``eff_months`` restates the same idea
+      as the effective number of equally busy months, from the Shannon entropy of
+      the shares, which is easier to read than an index.
+    - *When* it peaks: ``peak_month`` is the direction of that resultant vector,
+      a circular mean on a continuous 1-12 scale. Unlike ``idxmax`` it does not
+      jump between adjacent months over a small difference in counts, and it
+      wraps correctly for parks peaking around the turn of the year.
+
+    Rows with no recorded visits return NaN rather than a spurious zero.
+    """
+    counts = matrix[list(range(1, 13))].to_numpy(dtype=float)
+    per_day = counts / DAYS_IN_MONTH
+    totals = per_day.sum(axis=1, keepdims=True)
+    shares = np.divide(per_day, totals, out=np.full_like(per_day, np.nan), where=totals > 0)
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        entropy = -np.nansum(np.where(shares > 0, shares * np.log(shares), 0.0), axis=1) / np.log(12)
+    entropy = np.where(np.isnan(shares).all(axis=1), np.nan, entropy)
+
+    angles = 2 * np.pi * (np.arange(12) + 0.5) / 12
+    resultant = (shares * np.exp(1j * angles)).sum(axis=1)
+
+    return pd.DataFrame({"concentration": np.abs(resultant),
+                         "peak_month": (np.angle(resultant) % (2 * np.pi)) / (2 * np.pi) * 12,
+                         "entropy": entropy,
+                         "eff_months": np.exp(entropy * np.log(12))},
+                        index=matrix.index)
