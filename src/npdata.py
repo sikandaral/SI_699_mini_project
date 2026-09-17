@@ -177,15 +177,23 @@ def seasonality_indices(matrix: pd.DataFrame) -> pd.DataFrame:
 
     Two questions get two separate numbers, because they are different things:
 
-    - *How* seasonal: ``concentration`` is the resultant length of the monthly
-      shares placed on a circle, running 0 (visits spread evenly over the year)
-      to 1 (every visit in a single month). ``eff_months`` restates the same idea
-      as the effective number of equally busy months, from the Shannon entropy of
-      the shares, which is easier to read than an index.
-    - *When* it peaks: ``peak_month`` is the direction of that resultant vector,
-      a circular mean on a continuous 1-12 scale. Unlike ``idxmax`` it does not
-      jump between adjacent months over a small difference in counts, and it
-      wraps correctly for parks peaking around the turn of the year.
+    - *How* seasonal, measured two ways that are **not** interchangeable.
+      ``concentration`` is the resultant length of the monthly shares placed on a
+      circle: 1 means every visit lands in one month, while 0 means no single time
+      of year dominates -- which covers an even spread *and* a park with offsetting
+      peaks six months apart. ``eff_months`` is ``exp`` of the Shannon entropy of
+      the shares, i.e. the effective number of equally busy months (12 = flat).
+      It is order-blind, so it does catch the bimodal case that ``concentration``
+      misses. Across the 63 parks here the two agree closely (r = -0.98), but they
+      can disagree, and ``eff_months`` is the safer one to quote on its own.
+    - *When* it peaks: ``peak_month`` is the direction of the resultant vector, a
+      circular mean on a 1-12 scale where month ``m``'s midpoint is exactly ``m``
+      (so 7.0 is mid-July). It runs on [0.5, 12.5), wrapping at the year boundary,
+      so 12.4 and 0.4 are both late December. Unlike ``idxmax`` it does not jump
+      between adjacent months over a small difference in counts.
+
+    ``peak_month`` is only meaningful when ``concentration`` is well above 0: for a
+    near-flat calendar the direction is noise (see the floor used in the notebook).
 
     Rows with no recorded visits return NaN rather than a spurious zero.
     """
@@ -201,8 +209,12 @@ def seasonality_indices(matrix: pd.DataFrame) -> pd.DataFrame:
     angles = 2 * np.pi * (np.arange(12) + 0.5) / 12
     resultant = (shares * np.exp(1j * angles)).sum(axis=1)
 
+    # angles put month i at its midpoint (i + 0.5); the +0.5 shifts that back onto
+    # a 1-12 month scale, so July's midpoint reads as 7.0 rather than 6.5
+    peak = (np.angle(resultant) % (2 * np.pi)) / (2 * np.pi) * 12 + 0.5
+
     return pd.DataFrame({"concentration": np.abs(resultant),
-                         "peak_month": (np.angle(resultant) % (2 * np.pi)) / (2 * np.pi) * 12,
+                         "peak_month": peak,
                          "entropy": entropy,
                          "eff_months": np.exp(entropy * np.log(12))},
                         index=matrix.index)
