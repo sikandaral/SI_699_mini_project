@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Park Visit Is Spreading Out and Thinning Out</title>
+<style>
+  @page { size: letter; margin: 0.85in 0.9in; }
+  :root {
+    --text: #111110;
+    --muted: #55534e;
+    --rule: #d8d6d0;
+    --accent: #0d2f5c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Charter", "Georgia", "Times New Roman", serif;
+    font-size: 10.5pt;
+    line-height: 1.42;
+    color: var(--text);
+    hyphens: auto;
+  }
+  h1 { font-size: 16pt; line-height: 1.2; margin: 0 0 2pt; letter-spacing: -0.01em; }
+  .byline { font-size: 9pt; color: var(--muted); margin: 0 0 10pt; }
+  .byline span { white-space: nowrap; }
+  h2 {
+    font-size: 10.5pt; margin: 13pt 0 4pt; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--accent);
+    border-bottom: 0.5pt solid var(--rule); padding-bottom: 2pt;
+  }
+  h2:first-of-type { margin-top: 8pt; }
+  p { margin: 0 0 6pt; text-align: justify; }
+  .claim {
+    border-left: 2.5pt solid var(--accent);
+    padding: 6pt 0 6pt 10pt; margin: 2pt 0 8pt;
+    font-size: 11pt; line-height: 1.38;
+  }
+  .claim strong { font-weight: 600; }
+  figure { margin: 8pt 0 9pt; break-inside: avoid; }
+  figure img { width: 100%; display: block; }
+  figcaption {
+    font-size: 8.5pt; line-height: 1.35; color: var(--muted);
+    margin-top: 3pt; text-align: left;
+  }
+  figcaption b { color: var(--text); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.8pt; margin: 6pt 0 4pt; }
+  caption {
+    caption-side: top; text-align: left; font-size: 8.5pt;
+    color: var(--muted); padding-bottom: 3pt;
+  }
+  caption b { color: var(--text); font-weight: 600; }
+  th, td { padding: 2.6pt 5pt; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { border-bottom: 0.5pt solid var(--text); font-weight: 600; }
+  tbody tr + tr td { border-top: 0.4pt solid var(--rule); }
+  tbody td { font-variant-numeric: tabular-nums; }
+  .refs { font-size: 8.8pt; line-height: 1.35; }
+  .refs p { text-indent: -14pt; padding-left: 14pt; text-align: left; margin-bottom: 4pt; }
+  .appendix { break-before: page; }
+  .note { font-size: 9.2pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>The park visit is spreading out, and thinning out</h1>
+<p class="byline">
+  <span>Mohit Kumar</span> · <span>Sikandar Ali</span> · <span>Dongyeon Kang</span>
+  &nbsp;|&nbsp; SI 699 mini project &nbsp;|&nbsp; Draft, 17 September 2025
+</p>
+
+<h2>1. Claim</h2>
+<div class="claim">
+<strong>Between 1979 and 2023, the national park visit became less seasonal and less
+overnight.</strong> Visits grew about 55%, but almost none of that growth went into the
+traditional summer camping trip: the June–August share of visits fell from 50% to 41%
+(&minus;1.6 pp/decade), and overnight stays fell from 118 to 60 per 1,000 visits — a drop
+that also holds in absolute terms, and inside individual parks, not just in the national mix.
+</div>
+
+<h2>2. Data and approach</h2>
+
+<p>We use the by-month extract of NPS Visitor Use Statistics distributed by
+<em>Responsible Datasets in Context</em> (Walsh et al., 2024): 33,395 park-months covering
+all 63 units designated "National Park," 1979–2023, with monthly counts of recreation
+visits and of overnight stays split into tent, RV, and backcountry.</p>
+
+<p>Because the dataset is a count panel and not a survey of individuals, we cannot observe
+a visitor. We therefore measured two <em>ratios</em>, each designed so that overall growth
+in visitation cancels out of the numerator and denominator:</p>
+
+<p><b>Seasonal concentration</b> — the share of a year's recreation visits falling in
+June, July, and August. This asks when in the year visits happen, independent of how many
+there are. <b>Overnight intensity</b> — overnight stays per 1,000 recreation visits. This
+asks what kind of visit is happening, independent of how many.</p>
+
+<p>For each ratio we fit an ordinary least squares regression on calendar year, using
+Newey–West (HAC, 2 lags) standard errors, because annual visitation series are strongly
+autocorrelated and naive OLS errors would overstate our confidence. Camping-rate trends
+are fit in logs, so their slopes read as a percent change per decade. Two deliberate
+choices are worth naming. First, we report each result both visit-weighted (pooling all
+parks) and equal-weighted (averaging each park's own ratio), because the pooled figure is
+otherwise driven by a handful of very large parks. Second, we treat 2020–2021 as a
+potential confound rather than deleting it, and report the trend with and without those
+years.</p>
+
+<h2>3. Visits are de-seasonalizing — but by growing the shoulders, not shrinking summer</h2>
+
+<figure>
+  <img src="../figures/report_summer_share.png" alt="Line chart: June–August share of annual recreation visits, 1979–2023, falling from about 50% to 41%">
+  <figcaption><b>Figure 1.</b> Share of each year's recreation visits occurring in June–August.
+  The blue line pools all parks by visit volume; the orange line averages each park's own
+  share, so small parks count as much as Great Smoky Mountains. Dashed line is the fitted
+  OLS trend on the pooled series. Both decline steadily; 2020 is a visible but not
+  trend-defining excursion.</figcaption>
+</figure>
+
+<p>The June–August share fell from 49.6% in 1979 to a 42.4% average over 2019–2023, a trend
+of &minus;1.63 percentage points per decade (95% CI &minus;2.02 to &minus;1.23,
+<em>p</em> &lt; 0.001). Table 1 shows the estimate survives every alternative specification
+we tried. It attenuates under equal weighting — to &minus;0.96 pp/decade — which tells us
+the effect is larger in the big parks that most visitors actually go to, but it remains
+highly significant when every park counts equally. Dropping the pandemic years barely moves
+it. Defining "peak season" as each park's own best three consecutive months, rather than a
+fixed calendar summer, also barely moves it, because for the system as a whole June–August
+<em>is</em> the peak window.</p>
+
+<table>
+  <caption><b>Table 1.</b> Trend in peak-season visit share under four specifications.
+  Slopes are percentage points per decade; HAC(2) standard errors.</caption>
+  <thead>
+    <tr><th>Specification</th><th>Slope / decade</th><th>95% CI</th><th><em>p</em></th><th>Years</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Jun–Aug share, visit-weighted (headline)</td><td>&minus;1.63</td><td>[&minus;2.02, &minus;1.23]</td><td>1.5&times;10<sup>&minus;15</sup></td><td>45</td></tr>
+    <tr><td>Jun–Aug share, every park weighted equally</td><td>&minus;0.96</td><td>[&minus;1.34, &minus;0.58]</td><td>7.7&times;10<sup>&minus;7</sup></td><td>45</td></tr>
+    <tr><td>Jun–Aug share, excluding 2020 and 2021</td><td>&minus;1.60</td><td>[&minus;2.04, &minus;1.17]</td><td>3.0&times;10<sup>&minus;13</sup></td><td>43</td></tr>
+    <tr><td>Each park's own best 3 consecutive months</td><td>&minus;1.59</td><td>[&minus;1.99, &minus;1.18]</td><td>9.6&times;10<sup>&minus;15</sup></td><td>45</td></tr>
+  </tbody>
+</table>
+
+<p>A share can fall two ways, and which one it is matters for interpretation. Comparing
+average annual levels in 1979–1983 against 2019–2023: June–August visits <em>rose</em> from
+28.3M to 36.6M per year (+29%), while the other nine months rose from 27.6M to 49.9M
+(+81%). Summer never shrank. De-seasonalization here is entirely a story of the rest of the
+year growing nearly three times faster. The redistribution is also not confined to the
+shoulder months one might expect: July (&minus;3.7 pp) and August (&minus;4.4 pp) gave up
+share, and the largest single gain went to March (+1.8 pp), followed by December (+1.4),
+November (+1.1), and October (+1.0).</p>
+
+<figure>
+  <img src="../figures/report_park_trends.png" alt="Dot plot of per-park trends in June–August visit share; most parks negative, a few Alaska parks strongly positive">
+  <figcaption><b>Figure 2.</b> Each park's own trend in June–August share, in percentage
+  points per decade, for the 62 parks with at least 20 years of data. Blue = declining and
+  significant at <em>p</em> &lt; 0.05, orange = rising and significant, grey = not
+  significant. The four parks moving most strongly toward summer concentration are all
+  short-season northern parks.</figcaption>
+</figure>
+
+<p>Fitting the same regression separately for each park (Figure 2) confirms this is not an
+aggregation artifact: 43 of 62 parks trend toward less summer concentration, 34 of them
+significantly, against only 9 significantly rising. The exceptions are coherent rather than
+random noise, and they are the most interesting part of the picture. The four parks moving
+hardest <em>toward</em> summer concentration are Katmai (+9.2 pp/decade), Wrangell–St.
+Elias (+8.2), Lake Clark (+5.1), and Voyageurs (+3.1) — three Alaska parks and one on the
+Minnesota–Ontario border. These are places where the off-season is not merely unpleasant
+but largely inaccessible, so growth in demand has nowhere to go except into the short open
+season. De-seasonalization, in other words, appears to require that a park have a viable
+off-season to spread into.</p>
+
+<h2>4. And they are becoming less overnight</h2>
+
+<figure>
+  <img src="../figures/report_camping.png" alt="Line chart: overnight stays per 1,000 recreation visits by type, 1979–2023; tent and RV camping fall sharply, backcountry flat">
+  <figcaption><b>Figure 3.</b> Overnight stays per 1,000 recreation visits, by shelter type.
+  Labels give the fitted trend per decade from a log-linear model. RV camping falls fastest
+  and most steadily; backcountry use shows no significant trend.</figcaption>
+</figure>
+
+<p>Over the same period, overnight stays per 1,000 recreation visits fell from 118 to 60.
+The decline is concentrated in front-country camping: tent camping fell from 47.4 to 23.9
+per 1,000 visits (&minus;14.3% per decade, 95% CI &minus;17.1 to &minus;11.4), and RV
+camping from 52.6 to 16.6 (&minus;24.0% per decade, CI &minus;26.5 to &minus;21.3). Both
+are significant at <em>p</em> &lt; 0.001. Backcountry use is the exception: it drifted from
+19.5 to 14.7 per 1,000 visits, a trend of &minus;1.6% per decade that is not statistically
+distinguishable from flat (<em>p</em> = 0.37). Whatever is displacing the camping trip is
+not displacing the permit-based wilderness trip.</p>
+
+<p>Two checks rule out the obvious alternative explanations. First, this is not merely a
+denominator effect from growing day-use: overnight stays fell in absolute terms too, from
+6.6M to 4.9M per year (&minus;27%) between 1979–1983 and 2019–2023, while total visits rose
+55%. Second, it is not a compositional shift in which growth simply moved toward parks that
+never had campgrounds. A shift-share decomposition of the national camping rate between
+1979–1983 and 2017–2023 attributes the change almost entirely to a within-park term: parks
+became less camping-intensive, and the change in which parks get the visits contributes
+roughly &minus;6% (that is, the mix shift slightly <em>offset</em> the decline). Tracking
+individual long-running parks tells the same story — Yellowstone &minus;43%/decade, Zion
+&minus;23%, Yosemite &minus;19%, all <em>p</em> &lt; 0.001 — with one honest exception:
+Grand Canyon's overnight rate shows no significant trend (+6.0%/decade, <em>p</em> = 0.14).</p>
+
+<h2>5. Discussion</h2>
+
+<p><b>What is genuinely surprising.</b> We expected de-seasonalization to look like
+congestion relief — summer crowds pushed into May and September. It does not. Summer
+visitation grew substantially in absolute terms; the redistribution went disproportionately
+into the cold months, with March gaining more share than any other month. That pattern is
+hard to square with a pure crowd-avoidance story and easier to square with parks becoming a
+year-round destination for a larger, differently-distributed population of visitors. The
+Alaska counter-examples sharpen this: de-seasonalization is not a universal preference
+shift but something that happens where the calendar permits it.</p>
+
+<p><b>What is a useful sanity check rather than news.</b> That day use dominates camping is
+well known. The contribution here is the magnitude and the robustness — a halving of
+overnight intensity, concentrated in front-country camping, holding within parks — rather
+than the direction.</p>
+
+<p><b>What complicates the claim.</b> Three things. (i) Counting methodology has changed
+repeatedly over 45 years, and the data essay is explicit that counts are modeled estimates
+from traffic and entrance data, not censuses (Walsh et al., 2024). A slow drift in how
+off-season traffic is counted would look exactly like de-seasonalization, and we cannot
+rule this out from within the dataset. (ii) Campground capacity is roughly fixed while
+visits grew 55%, so a falling camping <em>rate</em> is partly mechanical — demand cannot
+exceed sites. The absolute decline in overnight stays argues against this being the whole
+story, but not against it mattering. (iii) "Recreation visits" excludes commuters,
+researchers, staff, and Indigenous people living on park lands, so our claim is about
+counted recreational visitation specifically.</p>
+
+<p><b>Generalizability.</b> The seasonal trend is estimated over 45 years and survives
+removing the pandemic, so we would expect it to continue in the near term — though the
+2019–2023 pooled series sits below its own fitted line, suggesting either overshoot or
+acceleration that a linear model does not capture. We would <em>not</em> extrapolate it to
+short-season parks, where the data show the opposite sign. The camping result is likely to
+extend to other NPS unit types with campgrounds, but the dataset covers only the 63 units
+designated "National Park," so this is a conjecture rather than a finding. The specific
+finding we would most want to test elsewhere is whether the cold-month growth we see
+reflects changing visitor composition or milder shoulder seasons; separating those requires
+climate and visitor-origin data that this dataset does not contain.</p>
+
+<h2>References</h2>
+<div class="refs">
+<p>Walsh, M., Jo, E. S., Ramirez, S., Sherman, S., &amp; Tang, E. (2024). <em>Visits to
+American National Parks: A Responsible Dataset in Context.</em> Responsible Datasets in
+Context. https://www.responsible-datasets-in-context.com/posts/np-data/ — used for the
+by-month data extract and, throughout Sections 2 and 5, for how counts are produced and
+what they exclude.</p>
+<p>National Park Service. <em>Visitor Use Statistics.</em> https://irma.nps.gov/Stats/ —
+original source of the counts redistributed above.</p>
+<p>Newey, W. K., &amp; West, K. D. (1987). A simple, positive semi-definite,
+heteroskedasticity and autocorrelation consistent covariance matrix. <em>Econometrica,</em>
+55(3), 703–708. — standard errors used for every trend reported here.</p>
+<p class="note">Analysis code: <code>src/npdata.py</code> (statistics),
+<code>src/report.py</code> (every figure and number in this report). Tools: Python, pandas,
+statsmodels, matplotlib.</p>
+</div>
+
+<div class="appendix">
+<h2>Appendix A. Shift-share decomposition of the camping rate</h2>
+
+<p>The national camping rate is a visit-weighted average of park-level rates,
+<em>R</em> = &Sigma;<sub>p</sub> <em>w<sub>p</sub> r<sub>p</sub></em>, where <em>w</em> is a
+park's share of visits and <em>r</em> its overnight stays per visit. The change between two
+periods decomposes into a <em>within</em> term (parks changed), a <em>between</em> term
+(visits moved between parks of differing camping intensity), and an interaction.</p>
+
+<table>
+  <caption><b>Table A1.</b> Decomposition of the change in overnight stays per 1,000 visits,
+  1979–1983 to 2017–2023. The symmetric split divides the interaction term evenly between
+  the within and between components, which avoids reporting a large uninterpretable
+  residual.</caption>
+  <thead><tr><th>Component</th><th>Raw split</th><th>Symmetric split</th></tr></thead>
+  <tbody>
+    <tr><td>Rate, 1979–1983 → 2017–2023 (per 1,000)</td><td colspan="2">118.4 → 59.5</td></tr>
+    <tr><td>Within-park change</td><td>83.5%</td><td>105.9%</td></tr>
+    <tr><td>Between-park (visit mix)</td><td>&minus;28.3%</td><td>&minus;5.9%</td></tr>
+    <tr><td>Interaction</td><td>44.7%</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<p>Under either split the conclusion is the same: the decline is a within-park phenomenon,
+and the shift in which parks receive visits worked slightly <em>against</em> it. We report
+the symmetric split in the main text because the raw interaction term here is large — the
+parks that grew fastest in visit share are also the ones whose camping rates changed most,
+so the two terms are not cleanly separable.</p>
+
+<h2>Appendix B. Data handling and known quality issues</h2>
+
+<p>We applied only light cleaning: stripping a UTF-8 byte-order mark and trailing
+whitespace from text fields (several region values arrive as, e.g., <code>"Northeast "</code>),
+and constructing a month-start date. No visit counts were imputed or adjusted.</p>
+
+<p>Per-park trend estimates (Figure 2) are restricted to parks with at least 20 annual
+observations, which drops one park and leaves 62. Months reporting exactly zero recreation
+visits are flagged in the loader; they are genuine non-reporting in some cases (Kobuk Valley
+has a 2014–2015 gap) and genuine in others (some Alaska parks legitimately record no winter
+visits), so we did not exclude them from the headline estimates. Carlsbad Caverns is known
+to have had a malfunctioning counter since 2019. None of these affect the direction or
+significance of any result reported above: dropping all 1,308 park-months belonging to a
+park-year that contains a zero-visit month moves the headline seasonal trend from
+&minus;1.63 to &minus;1.69 pp/decade, well inside the confidence interval in Table 1.</p>
+</div>
+
+</body>
+</html>

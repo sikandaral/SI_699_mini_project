@@ -17,8 +17,12 @@ from roughly 50% in 1979 to roughly 44% in 2019–2023.
   equally, to excluding the COVID-affected 2020–2021 years, and to using
   each park's own best three consecutive months instead of a fixed
   calendar summer.
+- Driven by growth in the other nine months, not by summer shrinking:
+  Jun–Aug visits rose 28.3M → 36.6M/yr (+29%) between 1979–83 and 2019–23,
+  while the other nine months rose 27.6M → 49.9M/yr (+81%). The largest
+  single month-share gain went to **March** (+1.8 pp), not to a shoulder month.
 - Broad-based: 43 of 62 parks with sufficient history trend toward less
-  summer concentration, and this is the statistically dominant pattern.
+  summer concentration (34 significantly, vs. 9 significantly rising).
   A small cluster of Alaska parks (Katmai, Wrangell–St. Elias, Lake Clark)
   trends the other way, becoming more summer-concentrated as tourism to
   short-season parks grows.
@@ -30,12 +34,18 @@ since 1979: tent camping by roughly **14% per decade** and RV camping by
 roughly **24% per decade** (both *p* < 0.001). Backcountry camping shows no
 significant trend.
 
-- A shift-share decomposition (1979–1983 vs. 2017–2023) attributes ~99% of
-  the change in the national camping rate to a **within-park** shift, not
-  to visit growth concentrating in parks that were never camping-heavy.
-- The same decline shows up inside individual long-running, high-traffic
-  parks (Yellowstone, Yosemite, Grand Canyon, Zion) tracked on their own,
-  not just as a national aggregate effect.
+- A shift-share decomposition (1979–1983 vs. 2017–2023, rate 118.4 → 59.5
+  per 1,000) attributes the change to a **within-park** shift: 105.9% under
+  a symmetric split, with the between-park visit mix contributing −5.9%,
+  i.e. slightly *offsetting* the decline. (Raw split: within 83.5%, between
+  −28.3%, interaction 44.7% — the large interaction is why we report the
+  symmetric version.)
+- Overnight stays also fell in **absolute** terms, 6.6M → 4.9M per year
+  (−27%) while total visits rose 55%, so this is not a denominator effect.
+- The decline shows up inside individual long-running, high-traffic parks
+  tracked on their own — Yellowstone −43%/decade, Zion −23%, Yosemite −19%
+  (all *p* < 0.001) — with one exception: **Grand Canyon shows no
+  significant trend** (+6.0%/decade, *p* = 0.14).
 
 ## Supporting context
 
